@@ -4,8 +4,7 @@
 #########################
 
 # change 'tests => 1' to 'tests => last_test_to_print';
-
-use Test::More tests => 2;
+use Test::More tests => 3;
 BEGIN { use_ok('C::TCC') };
 
 #########################
@@ -14,4 +13,17 @@ BEGIN { use_ok('C::TCC') };
 # its man page ( perldoc Test::More ) for help writing this test script.
 
 my $tcc = C::TCC->new();
-isa_ok($tcc, 'C::TCC');
+$tcc->define_symbol('SYM', 1);
+$tcc->undefine_symbol('SYM');
+$ret = $tcc->compile_string('
+int main()
+{
+#ifdef SYM
+    return 1;
+#else
+    return 2;
+#endif
+}');
+ok($ret == 0);
+$ret = $tcc->run();
+ok($ret == 2);

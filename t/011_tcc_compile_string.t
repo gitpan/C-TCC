@@ -14,7 +14,7 @@ BEGIN { use_ok('C::TCC') };
 # its man page ( perldoc Test::More ) for help writing this test script.
 
 my $tcc = C::TCC->new();
-$ret = $tcc->add_file('t/hello.c');
-ok ($ret == 0);
+$ret = $tcc->compile_string('int main(){printf("Hello World.\n"); return 0;}');
+ok($ret == 0);
 $ret = $tcc->run();
-ok ($ret == 0);
+ok($ret == 0);
