@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# $Id: TCC.pm,v 1.3 2008/03/17 09:51:45 hamano Exp $
+# $Id: TCC.pm,v 1.8 2008/03/18 06:32:41 hamano Exp $
 
 package C::TCC;
 
@@ -34,15 +34,32 @@ our @ISA = qw(Exporter);
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
-
+TCC_OUTPUT_MEMORY
+TCC_OUTPUT_EXE
+TCC_OUTPUT_DLL
+TCC_OUTPUT_OBJ
+TCC_OUTPUT_PREPROCESS
+TCC_OUTPUT_FORMAT_ELF
+TCC_OUTPUT_FORMAT_BINARY
+TCC_OUTPUT_FORMAT_COFF
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our @EXPORT = qw(
-);
+our @EXPORT = ( @{ $EXPORT_TAGS{'all'} });
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
+
+use constant {
+    TCC_OUTPUT_MEMORY     => 0,
+    TCC_OUTPUT_EXE        => 1,
+    TCC_OUTPUT_DLL        => 2,
+    TCC_OUTPUT_OBJ        => 3,
+    TCC_OUTPUT_PREPROCESS => 4,
+    TCC_OUTPUT_FORMAT_ELF    => 0,
+    TCC_OUTPUT_FORMAT_BINARY => 1,
+    TCC_OUTPUT_FORMAT_COFF   => 2,
+};
 
 require XSLoader;
 XSLoader::load('C::TCC', $VERSION);
@@ -57,7 +74,6 @@ sub new
     bless $self, $class;
 
     $self->{state} = tcc_new();
-
     return $self;
 }
 
@@ -110,6 +126,22 @@ sub compile_string
     tcc_compile_string($self->{state}, $buf);
 }
 
+sub set_output_type
+{
+    my $self = shift;
+    my $output_type = shift;
+    tcc_set_output_type($self->{state}, $output_type);
+}
+
+#
+
+sub output_file
+{
+    my $self = shift;
+    my $filename = shift;
+    tcc_output_file($self->{state}, $filename);
+}
+
 sub run
 {
     my $self = shift;
@@ -123,7 +155,7 @@ __END__
 
 =head1 NAME
 
-C::TCC - Perl extension for TCC
+C::TCC - An interface to the TCC(Tiny C Compiler)
 
 =head1 SYNOPSIS
 
@@ -153,15 +185,15 @@ Create a new TCC compilation context.
 
 Add include path
 
-=item C<tcc_add_sysinclude_path>
+=item C<add_sysinclude_path>
 
 Add in system include path
 
-=item C<tcc_define_symbol>
+=item C<define_symbol>
 
 Define preprocessor symbol 'sym'. Can put optional value
 
-=item C<tcc_undefine_symbol>
+=item C<undefine_symbol>
 
 Undefine preprocess symbol 'sym'
 
@@ -174,12 +206,33 @@ script). Return -1 if error.
 
 Compile a string containing a C source. Return non zero if error.
 
+=item C<set_output_type>
+
+set output type. MUST BE CALLED before any compilation
+
+TCC_OUTPUT_MEMORY
+
+TCC_OUTPUT_EXE
+
+TCC_OUTPUT_DLL
+
+TCC_OUTPUT_OBJ
+
+TCC_OUTPUT_PREPROCESS
+
+=item C<output_file>
+
+output an executable, library or object file. DO NOT call
+relocate() method before.
+
 =item C<run>
 
 link and run main() function and return its value. DO NOT call
-tcc_relocate() before.
+relocate() before.
 
 =head1 SEE ALSO
+
+TCC(Tiny C Compiler) is created by Fabrice Bellard.
 
 http://fabrice.bellard.free.fr/tcc/
 
