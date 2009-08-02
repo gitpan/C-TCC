@@ -1,9 +1,9 @@
 --- #YAML:1.0
 name:               C-TCC
-version:            0.04
+version:            0.05
 abstract:           An interface to the TCC(Tiny C Compiler)
 author:
-    - Tsukasa Hamano <hamano@klab.org>
+    - Tsukasa Hamano <hamano@cpan.org>
 license:            LGPL
 distribution_type:  module
 configure_requires:

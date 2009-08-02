@@ -1,4 +1,4 @@
-# Copyright (C) 2008 Tsukasa Hamano <hamano@klab.org>
+# Copyright (C) 2008 Tsukasa Hamano <hamano@cpan.org>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = ( @{ $EXPORT_TAGS{'all'} });
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use constant {
     TCC_OUTPUT_MEMORY     => 0,
@@ -82,6 +82,12 @@ sub DESTROY
     my $self = shift;
     tcc_delete($self->{state});
 }
+
+#sub enable_debug
+#{
+#    my $self = shift;
+#    tcc_enable_debug($self->{state});
+#}
 
 sub add_include_path
 {
@@ -223,11 +229,11 @@ http://fabrice.bellard.free.fr/tcc/
 
 =head1 AUTHOR
 
-Tsukasa Hamano <hamano@klab.org>
+Tsukasa Hamano <hamano@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008 Tsukasa Hamano <hamano@klab.org>
+Copyright (C) 2008 Tsukasa Hamano <hamano@cpan.org>
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
